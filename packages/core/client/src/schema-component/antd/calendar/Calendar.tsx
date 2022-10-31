@@ -11,6 +11,7 @@ import { RecordProvider } from '../../../';
 import { i18n } from '../../../i18n';
 import { useProps } from '../../hooks/useProps';
 import { ActionContext } from '../action';
+import Header from './components/Header';
 import { CalendarToolbarContext } from './context';
 import './style.less';
 import type { ToolbarProps } from './types';
@@ -105,10 +106,11 @@ const CalendarRecordViewer = (props) => {
 };
 
 export const Calendar: any = observer((props: any) => {
-  const { dataSource, fieldNames } = useProps(props);
+  const { dataSource, fieldNames, showLunar } = useProps(props);
   const events = useEvents(dataSource, fieldNames);
   const [visible, setVisible] = useState(false);
   const [record, setRecord] = useState<any>({});
+
   return (
     <div {...props} style={{ height: 700 }}>
       <CalendarRecordViewer visible={visible} setVisible={setVisible} record={record} />
@@ -147,7 +149,13 @@ export const Calendar: any = observer((props: any) => {
         }}
         defaultDate={new Date()}
         components={{
-          toolbar: Toolbar,
+          toolbar: (props) => <Toolbar {...props} showLunar={showLunar}></Toolbar>,
+          week: {
+            header: (props) => <Header {...props} type="week" showLunar={showLunar}></Header>,
+          },
+          month: {
+            dateHeader: (props) => <Header {...props} showLunar={showLunar}></Header>,
+          },
         }}
         localizer={localizer}
       />
